@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "ExampleMechanumDrive", group = "Meet0")
 public class DriveUsingMechanumWheels extends LinearOpMode {
@@ -23,13 +24,20 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
         brWheel = hardwareMap.dcMotor.get("brWheel");
         blWheel = hardwareMap.dcMotor.get("blWheel");
 
-        frWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        frWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        brWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+
+//        frWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        flWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         waitForStart();
+        if (isStopRequested()) return;
+
         // All code here is after the start button is hit.
         // Main loop; until stop button is hit
         while(opModeIsActive()){
@@ -48,6 +56,13 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
             brWheel.setPower(brWheelPower);
             blWheel.setPower(blWheelPower);
             flWheel.setPower(flWheelPower);
+
+            telemetry.addData("y", y);
+            telemetry.addLine()
+                            .addData("x", x)
+                            .addData("rx", rx);
+            telemetry.addData("Wheel Power",  frWheelPower);
+            telemetry.update();
 
         }
     }
