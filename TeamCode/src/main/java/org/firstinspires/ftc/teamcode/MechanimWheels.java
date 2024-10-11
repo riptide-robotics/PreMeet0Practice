@@ -46,13 +46,15 @@ public class MechanimWheels extends LinearOpMode{
             x = -gamepad1.left_stick_x * 1.1;
             rx = gamepad1.right_stick_x;
 
-            // powers of each motor
-            double flPower = y-x+rx;
-            double frPower = y+x-rx;
-            double blPower = y+x+rx;
-            double brPower = y-x-rx;
 
             double scale = Math.max(Math.abs(y)+Math.abs(x)+Math.abs(rx), 1);
+
+            // powers of each motor
+            double flPower = (y-x+rx) / scale;
+            double frPower = (y+x-rx) / scale;
+            double blPower = (y+x+rx) / scale;
+            double brPower = (y-x-rx) / scale;
+
 
 
             // Set power to each motor
