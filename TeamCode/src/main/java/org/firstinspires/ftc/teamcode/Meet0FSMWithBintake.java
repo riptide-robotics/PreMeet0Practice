@@ -23,6 +23,7 @@ public class Meet0FSMWithBintake extends LinearOpMode {
     Servo specimenClawPitch;
 
     Servo bintakeJoint;
+
     CRServo bintake;
 
     final double HANSEN_CLAW_MIN_PITCH = 0.8;
@@ -35,8 +36,8 @@ public class Meet0FSMWithBintake extends LinearOpMode {
     final double BINTAKE_DOWN = 0.45;
 
     public static int HIGHEST_SLIDE_HEIGHT = 2350;
-    public static int LOWEST_SLIDE_HEIGHT = 200;
-    final int bintakeTolorance = 1500;
+    public static int LOWEST_SLIDE_HEIGHT = 100;
+    final int bintakeTolorance = 2000;
 
     //FSM statesu7
     public enum states{
@@ -69,8 +70,8 @@ public class Meet0FSMWithBintake extends LinearOpMode {
         lLiftSlide = hardwareMap.dcMotor.get("lSlide");
         rLiftSlide = hardwareMap.dcMotor.get("rSlide");
 
-        lLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //lLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -81,7 +82,7 @@ public class Meet0FSMWithBintake extends LinearOpMode {
         bintake = hardwareMap.crservo.get("bintake");
 
         // init positions
-        specimenClawPitch.setPosition(0.5);
+        specimenClawPitch.setPosition(0.61);
         specimenClawGrab.setPosition(1);
 
         states currState = states.START;
@@ -167,9 +168,13 @@ public class Meet0FSMWithBintake extends LinearOpMode {
                         bintakeJoint.setPosition(BINTAKE_DOWN);
                     }
 
+                    if(gamepad2.dpad_right){
+                        bintake.setPower(0);
+                    }
+
                     if(gamepad2.left_bumper)
                     {
-                        bintake.setPower(-1);
+                        bintake.setPower(1);
                     }
 
                     if(gamepad2.dpad_down)
@@ -178,12 +183,12 @@ public class Meet0FSMWithBintake extends LinearOpMode {
                     }
                     break;
                 case DEPLOY:
-                    bintake.setPower(1);
+                    bintake.setPower(-1);
                     sleep(100);
                     bintake.setPower(0);
                     bintakeJoint.setPosition(BINTAKE_UP);
 
-                    sleep (100);
+                    sleep (500);
 
                     runSlides(0.8, LOWEST_SLIDE_HEIGHT);
 
