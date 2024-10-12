@@ -24,16 +24,23 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
         brWheel = hardwareMap.dcMotor.get("brWheel");
         blWheel = hardwareMap.dcMotor.get("blWheel");
 
-        frWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        frWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        brWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+
+//        frWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        flWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         waitForStart();
+        if (isStopRequested()) return;
+
         // All code here is after the start button is hit.
         // Main loop; until stop button is hit
         while(opModeIsActive()){
@@ -52,6 +59,13 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
             brWheel.setPower(brWheelPower);
             blWheel.setPower(blWheelPower);
             flWheel.setPower(flWheelPower);
+
+            telemetry.addData("y", y);
+            telemetry.addLine()
+                            .addData("x", x)
+                            .addData("rx", rx);
+            telemetry.addData("Wheel Power",  frWheelPower);
+            telemetry.update();
 
         }
     }
