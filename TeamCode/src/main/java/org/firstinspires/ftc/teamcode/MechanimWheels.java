@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class MechanimWheels extends LinearOpMode{
 
-    // importing dc motors
+    // Stating dc motors
     DcMotor flWheel;
     DcMotor frWheel;
     DcMotor blWheel;
