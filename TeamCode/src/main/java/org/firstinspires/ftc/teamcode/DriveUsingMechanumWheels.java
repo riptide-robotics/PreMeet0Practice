@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "ExampleMechanumDrive", group = "Meet0")
 public class DriveUsingMechanumWheels extends LinearOpMode {
@@ -27,6 +28,9 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
         flWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         waitForStart();
