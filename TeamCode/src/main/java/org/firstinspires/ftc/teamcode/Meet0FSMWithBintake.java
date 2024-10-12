@@ -70,8 +70,8 @@ public class Meet0FSMWithBintake extends LinearOpMode {
         lLiftSlide = hardwareMap.dcMotor.get("lSlide");
         rLiftSlide = hardwareMap.dcMotor.get("rSlide");
 
-        //lLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -113,7 +113,7 @@ public class Meet0FSMWithBintake extends LinearOpMode {
                     }
 
 
-                    if(gamepad1.start)
+                    if(gamepad2.back)
                     {
                         currState = states.HANG;
                     }
@@ -177,6 +177,10 @@ public class Meet0FSMWithBintake extends LinearOpMode {
                         bintake.setPower(1);
                     }
 
+                    if(gamepad2.y){
+                        bintakeJoint.setPosition(BINTAKE_UP);
+                    }
+
                     if(gamepad2.dpad_down)
                     {
                         currState = states.DEPLOY;
@@ -227,6 +231,8 @@ public class Meet0FSMWithBintake extends LinearOpMode {
             brWheel.setPower(brWheelPower);
             blWheel.setPower(blWheelPower);
             flWheel.setPower(flWheelPower);
+
+
 
         }
 
