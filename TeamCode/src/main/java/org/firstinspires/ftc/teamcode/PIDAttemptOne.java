@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Config
-@TeleOp(name = "Slides Test 1", group = "PID")
+@TeleOp(name = "Slides Test 1", group = "testing")
 public class PIDAttemptOne extends LinearOpMode {
 
     DcMotor lLiftSlide;

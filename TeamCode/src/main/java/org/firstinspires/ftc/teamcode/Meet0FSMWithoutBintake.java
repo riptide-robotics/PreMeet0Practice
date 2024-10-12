@@ -1,0 +1,231 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@TeleOp(name = "no Bintake", group = "meet 0")
+public class Meet0FSMWithoutBintake extends LinearOpMode {
+
+    //Initializations
+    DcMotor frWheel;
+    DcMotor flWheel;
+    DcMotor brWheel;
+    DcMotor blWheel;
+
+    DcMotor lLiftSlide;
+    DcMotor rLiftSlide;
+
+    Servo specimenClawGrab;
+    Servo specimenClawPitch;
+
+    final double HANSEN_CLAW_MIN_PITCH = 0.8;
+    final double HANSEN_CLAW_MEDIUM_PITCH = 0.61;
+    final double HANSEN_CLAW_MAX_PITCH = 0.5;
+    final double HANSEN_CLAW_MAX_GRAB = 1;
+    final double HANSEN_CLAW_MIN_GRAB = 0.75;
+
+    public static int HIGHEST_SLIDE_HEIGHT = 2350; // important
+    public static int LOWEST_SLIDE_HEIGHT = 200; // important
+
+    //FSM states
+    public enum states{
+        START,
+        GRAB,
+        DROP,
+        HANG
+    }
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        //Drivetrain wheels
+        frWheel = hardwareMap.dcMotor.get("frWheel");
+        flWheel = hardwareMap.dcMotor.get("flWheel");
+        brWheel = hardwareMap.dcMotor.get("brWheel");
+        blWheel = hardwareMap.dcMotor.get("blWheel");
+
+        blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        frWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        brWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        //Hansen Claw
+        specimenClawGrab = hardwareMap.servo.get("specimenGrab");
+        specimenClawPitch = hardwareMap.servo.get("specimenPitch");
+
+        //Lift Slides
+        lLiftSlide = hardwareMap.dcMotor.get("lSlide");
+        rLiftSlide = hardwareMap.dcMotor.get("rSlide");
+
+        lLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rLiftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        lLiftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // init positions
+        specimenClawPitch.setPosition(0.5);
+        specimenClawGrab.setPosition(1);
+
+        states currState = states.START;
+
+        waitForStart();
+
+        while(opModeIsActive())
+        {
+
+            switch (currState)
+            {
+                case START:
+
+                    runSlides(0.8, LOWEST_SLIDE_HEIGHT);
+                    specimenClawGrab.setPosition(HANSEN_CLAW_MAX_GRAB);
+                    specimenClawPitch.setPosition(HANSEN_CLAW_MEDIUM_PITCH);
+
+                    if(gamepad2.x)
+                    {
+                        specimenClawGrab.setPosition(HANSEN_CLAW_MIN_GRAB);
+                        //runSlides(0.8, LOWEST_SLIDE_HEIGHT + 400);
+                        currState = states.GRAB;
+                    }
+
+                    if(gamepad1.start)
+                    {
+                        currState= states.HANG;
+                    }
+
+                    break;
+                case GRAB:
+
+                    if(gamepad2.back)
+                    {
+                        runSlides(0.8, LOWEST_SLIDE_HEIGHT + 400);
+                    }
+
+                    if (gamepad2.y)
+                    {
+                        runSlides(0.8, HIGHEST_SLIDE_HEIGHT);
+                    }
+
+                    if (gamepad2.a)
+                    {
+                        runSlides(0.8, LOWEST_SLIDE_HEIGHT);
+                    }
+
+                    if (gamepad2.b)
+                    {
+                        specimenClawGrab.setPosition(1);
+                    }
+
+                    if (gamepad2.dpad_up)
+                    {
+                        specimenClawPitch.setPosition(HANSEN_CLAW_MAX_PITCH);
+                    }
+                    if (gamepad2.dpad_down)
+                    {
+                        specimenClawPitch.setPosition(HANSEN_CLAW_MEDIUM_PITCH);
+                    }
+                    if(gamepad2.dpad_right)
+                    {
+                        specimenClawPitch.setPosition(HANSEN_CLAW_MIN_PITCH);
+                    }
+
+
+                    if(gamepad2.start)
+                    {
+                        specimenClawGrab.setPosition(HANSEN_CLAW_MAX_GRAB);
+                        currState= states.START;
+                    }
+
+                    if(gamepad2.left_bumper)
+                    {
+                        currState = states.START;
+                    }
+
+                    break;
+                case HANG:
+                    if (gamepad2.y)
+                    {
+                        runSlides(0.8, HIGHEST_SLIDE_HEIGHT);
+                    }
+
+                    if(gamepad2.a) {
+                        rLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        lLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        rLiftSlide.setPower(-1);
+                        lLiftSlide.setPower(-1);
+                    }
+                    break;
+
+            }
+
+
+
+
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1; // 1.1 is to account for hardware inconsistencies.
+            double rx = gamepad1.right_stick_x;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frWheelPower = (y - x - rx)/denominator;
+            double flWheelPower = (y + x + rx)/denominator;
+            double brWheelPower = (y + x - rx)/denominator;
+            double blWheelPower = (y - x + rx)/denominator;
+
+            frWheel.setPower(frWheelPower);
+            brWheel.setPower(brWheelPower);
+            blWheel.setPower(blWheelPower);
+            flWheel.setPower(flWheelPower);
+
+        }
+
+    }
+
+    public void runSlides(double power, int target)
+    {
+
+        int err = Math.abs(rLiftSlide.getCurrentPosition() - lLiftSlide.getCurrentPosition());
+        int max = 1;
+        if (power < 0) {
+            max = -1;
+        } else if (power == 0) {
+            max = 0;
+        }
+
+
+        rLiftSlide.setTargetPosition(target);
+        lLiftSlide.setTargetPosition(target);
+        rLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (power == 0) {
+            rLiftSlide.setPower(power);
+            lLiftSlide.setPower(power);
+            return;
+        }
+
+        while (err >= 50) {
+            if (rLiftSlide.getCurrentPosition() < lLiftSlide.getCurrentPosition()) {
+                rLiftSlide.setPower(max);
+                lLiftSlide.setPower(power);
+            } else if (lLiftSlide.getCurrentPosition() < rLiftSlide.getCurrentPosition()) {
+                lLiftSlide.setPower(max);
+                rLiftSlide.setPower(power);
+            } else {
+                rLiftSlide.setPower(max);
+                lLiftSlide.setPower(max);
+            }
+            err = Math.abs(rLiftSlide.getCurrentPosition() - lLiftSlide.getCurrentPosition());
+
+            if(gamepad1.b) {
+                return;
+            }
+        }
+
+        rLiftSlide.setPower(max);
+        lLiftSlide.setPower(max);
+    }
+}
