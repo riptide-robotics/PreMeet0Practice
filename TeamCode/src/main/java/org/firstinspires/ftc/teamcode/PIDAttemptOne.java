@@ -11,6 +11,11 @@ public class PIDAttemptOne extends LinearOpMode {
     DcMotor lLiftSlide;
     DcMotor rLiftSlide;
 
+    final int COUNTS_PER_REVOLUTION = 752;
+
+    final int highestHigh = 2000; // important
+    final int lowestLow = 100; // important
+
     @Override
     public void runOpMode() throws InterruptedException {
         lLiftSlide = hardwareMap.dcMotor.get("lSlide");
@@ -23,23 +28,18 @@ public class PIDAttemptOne extends LinearOpMode {
 
         lLiftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        final int COUNTS_PER_REVOLUTION = 752;
-
-        final int highestHigh = 2000;
-        final int lowestLow = 100;
-
         waitForStart();
 
         while(opModeIsActive())
         {
             if(gamepad1.y)
             {
-                runSlides(1, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                runSlides(0.85, highestHigh);
             }
 
             if(gamepad1.b)
             {
-                runSlides(0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                runSlides(0, 500);
             }
             
             if(gamepad1.x)
@@ -49,7 +49,7 @@ public class PIDAttemptOne extends LinearOpMode {
             
             if(gamepad1.a)
             {
-                runSlides(-1, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                runSlides(-0.85, lowestLow);
             }
 
             telemetry.addData("Left Slide current Encoder tick:", lLiftSlide.getCurrentPosition());
@@ -60,7 +60,7 @@ public class PIDAttemptOne extends LinearOpMode {
 
     }
 
-    public void runSlides(double power, DcMotor.RunMode runmode)
+    public void runSlides(double power, int target)
     {
 
         //we read encoder tick values
@@ -68,11 +68,51 @@ public class PIDAttemptOne extends LinearOpMode {
         //if |err| >= 50 encoder ticks
 
         // apply a multiplier * some value to bring the encoders back to equal
-        rLiftSlide.setMode(runmode);
-        rLiftSlide.setPower(power);
-        
-        lLiftSlide.setMode(runmode);
-        lLiftSlide.setPower(power);
+
+        //rLiftSlide.setTargetPosition(highestHigh);
+        //rLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //rLiftSlide.setPower(1);
+
+        //rLiftSlide.getCurrentPosition();
+
+        int err = Math.abs(rLiftSlide.getCurrentPosition() - lLiftSlide.getCurrentPosition());
+        int max = 1;
+        if (power < 0) {
+            max = -1;
+        } else if (power == 0) {
+            max = 0;
+        }
+        rLiftSlide.setTargetPosition(target);
+        lLiftSlide.setTargetPosition(target);
+        rLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (power == 0) {
+            rLiftSlide.setPower(power);
+            lLiftSlide.setPower(power);
+            return;
+        }
+
+        while (err >= 50) {
+            if (rLiftSlide.getCurrentPosition() < lLiftSlide.getCurrentPosition()) {
+                rLiftSlide.setPower(max);
+                lLiftSlide.setPower(power);
+            } else if (lLiftSlide.getCurrentPosition() < rLiftSlide.getCurrentPosition()) {
+                lLiftSlide.setPower(max);
+                rLiftSlide.setPower(power);
+            } else {
+                rLiftSlide.setPower(max);
+                lLiftSlide.setPower(max);
+            }
+            err = Math.abs(rLiftSlide.getCurrentPosition() - lLiftSlide.getCurrentPosition());
+
+            if(gamepad1.b) {
+                return;
+            }
+        }
+
+        rLiftSlide.setPower(max);
+        lLiftSlide.setPower(max);
     }
 
 
