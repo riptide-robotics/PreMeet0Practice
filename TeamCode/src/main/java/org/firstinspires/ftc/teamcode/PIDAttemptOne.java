@@ -13,7 +13,7 @@ public class PIDAttemptOne extends LinearOpMode {
 
     final int COUNTS_PER_REVOLUTION = 752;
 
-    final int highestHigh = 2000; // important
+    final int highestHigh = 2350; // important
     final int lowestLow = 100; // important
 
     @Override
@@ -50,6 +50,13 @@ public class PIDAttemptOne extends LinearOpMode {
             if(gamepad1.a)
             {
                 runSlides(-0.85, lowestLow);
+            }
+
+            if(gamepad1.dpad_down) {
+                rLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                lLiftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rLiftSlide.setPower(-1);
+                lLiftSlide.setPower(-1);
             }
 
             telemetry.addData("Left Slide current Encoder tick:", lLiftSlide.getCurrentPosition());
