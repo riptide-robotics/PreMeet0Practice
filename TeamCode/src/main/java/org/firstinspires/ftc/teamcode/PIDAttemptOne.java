@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+@Config
 @TeleOp(name = "Slides Test 1", group = "PID")
 public class PIDAttemptOne extends LinearOpMode {
 
@@ -13,8 +15,8 @@ public class PIDAttemptOne extends LinearOpMode {
 
     final int COUNTS_PER_REVOLUTION = 752;
 
-    final int highestHigh = 2350; // important
-    final int lowestLow = 100; // important
+    public static int highestHigh = 2350; // important
+    public static int lowestLow = 800; // important
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -89,6 +91,8 @@ public class PIDAttemptOne extends LinearOpMode {
         } else if (power == 0) {
             max = 0;
         }
+
+
         rLiftSlide.setTargetPosition(target);
         lLiftSlide.setTargetPosition(target);
         rLiftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
