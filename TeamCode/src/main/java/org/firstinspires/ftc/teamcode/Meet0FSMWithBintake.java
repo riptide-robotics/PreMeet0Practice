@@ -11,10 +11,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Meet0FSMWithBintake extends LinearOpMode {
 
     //Initializations
-    DcMotor frWheel;
-    DcMotor flWheel;
-    DcMotor brWheel;
-    DcMotor blWheel;
 
     DcMotor lLiftSlide;
     DcMotor rLiftSlide;
@@ -51,16 +47,8 @@ public class Meet0FSMWithBintake extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //Drivetrain wheels
-        frWheel = hardwareMap.dcMotor.get("frWheel");
-        flWheel = hardwareMap.dcMotor.get("flWheel");
-        brWheel = hardwareMap.dcMotor.get("brWheel");
-        blWheel = hardwareMap.dcMotor.get("blWheel");
+        DriveTrain wheels = new DriveTrain();
 
-        blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        flWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        frWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        brWheel.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Hansen Claw
         specimenClawGrab = hardwareMap.servo.get("specimenGrab");
@@ -214,28 +202,25 @@ public class Meet0FSMWithBintake extends LinearOpMode {
 
             }
 
+            handleDriving(2, wheels);
 
-
-
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1; // 1.1 is to account for hardware inconsistencies.
-            double rx = gamepad1.right_stick_x;
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frWheelPower = (y - x - rx)/denominator;
-            double flWheelPower = (y + x + rx)/denominator;
-            double brWheelPower = (y + x - rx)/denominator;
-            double blWheelPower = (y - x + rx)/denominator;
-
-            frWheel.setPower(frWheelPower);
-            brWheel.setPower(brWheelPower);
-            blWheel.setPower(blWheelPower);
-            flWheel.setPower(flWheelPower);
 
 
 
         }
 
+    }
+
+    public void handleDriving(int mode, DriveTrain wheels) throws IllegalArgumentException {
+        if (mode == 1) {
+            wheels.robotCentricDrive();
+        }
+        else if(mode == 2) {
+            wheels.fieldCentricDrive();
+        }
+        else {
+            throw new IllegalArgumentException("Not a valid Drive Mode: " + mode);
+        }
     }
 
     public void runSlides(double power, int target)
