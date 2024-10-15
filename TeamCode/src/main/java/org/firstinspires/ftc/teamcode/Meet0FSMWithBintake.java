@@ -47,7 +47,7 @@ public class Meet0FSMWithBintake extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DriveTrain wheels = new DriveTrain();
+        DriveTrain wheels = new DriveTrain(hardwareMap, gamepad1);
 
 
         //Hansen Claw

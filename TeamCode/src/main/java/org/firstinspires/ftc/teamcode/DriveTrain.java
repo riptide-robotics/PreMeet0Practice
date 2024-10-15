@@ -1,26 +1,35 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+
 public class DriveTrain {
 
-    private final DcMotor frWheel;
-    private final DcMotor flWheel;
-    private final DcMotor brWheel;
-    private final DcMotor blWheel;
-    private final IMU imu;
+    HardwareMap hardwareMap;
+    Gamepad gamepad1;
+
+    DcMotor frWheel;
+    DcMotor flWheel;
+    DcMotor brWheel;
+    DcMotor blWheel;
+    IMU imu;
 
 
-    public DriveTrain() {
+
+    public DriveTrain(HardwareMap hardwareMap, Gamepad gamepad1) {
+
+        this.hardwareMap = hardwareMap;
+        this.gamepad1 = gamepad1;
+
         frWheel = hardwareMap.dcMotor.get("frWheel");
         flWheel = hardwareMap.dcMotor.get("flWheel");
         brWheel = hardwareMap.dcMotor.get("brWheel");
@@ -41,6 +50,11 @@ public class DriveTrain {
 
 
     }
+
+//    @Override
+//    public void runOpMode() throws InterruptedException {
+//        // code
+//    }
 
     public void robotCentricDrive() {
         double y = -gamepad1.left_stick_y;
