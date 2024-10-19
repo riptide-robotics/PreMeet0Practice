@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @TeleOp(name = "Field Centric Drive")
 public class FieldCentricDrive extends LinearOpMode {
@@ -22,24 +23,16 @@ public class FieldCentricDrive extends LinearOpMode {
     DcMotor frWheel;
     DcMotor blWheel;
     DcMotor brWheel;
-//
-//    DcMotor frOdomitor;
-//    DcMotor flOdomitor;
-//    DcMotor fOdomitor;
-//
-
-
-
 
     double x;
     double y;
     double rx;
 
 
-    private final double R = 4.8;
-    private final int V = 2000;
-    private final double C = 1/V;
-    private final double L = 10; //unknown I PUT A RANDOM NUMBER
+    private final double R = 4.8; //
+    private final int V = 2000; //
+    private final double C = 1/V; // Circumfrence
+    private final double L = 10; //unknown I PUT A RANDOM NUMBER (L is the distance between the 2 parallel odomitors
 
 
     private IMU imu;
@@ -106,19 +99,21 @@ public class FieldCentricDrive extends LinearOpMode {
             blWheel.setPower(blPower);
             brWheel.setPower(brPower);
 
-            int odomitorParallel1Change = flWheel.getCurrentPosition() - odomitorParallel1Init;
-            int odomitorParallel2Change = frWheel.getCurrentPosition() - odomitorParallel2Init;
-            int odomitorPerpendicularChange = blWheel.getCurrentPosition() - odomitorPerpendicularInit;
-
-            frWheel.getCurrentPosition();
-            brWheel.getCurrentPosition();
+            int odomitorParallel1Change = flWheel.getCurrentPosition() - odomitorParallel1Init; // Front left odomitor
+            int odomitorParallel2Change = frWheel.getCurrentPosition() - odomitorParallel2Init; // Front right odomitor
+            int odomitorPerpendicularChange = blWheel.getCurrentPosition() - odomitorPerpendicularInit; // Perpendicular odomitor
 
             double deltaY = odomitorPerpendicularChange - (odomitorParallel2Change - odomitorParallel1Change) / 2;
             double deltaX = C*(odomitorParallel1Change + odomitorParallel2Change);
             double deltaTheta = C*(odomitorParallel2Change - odomitorParallel1Change) / L;
 
+
+            odomitorParallel1Init = flWheel.getCurrentPosition();
+            odomitorParallel2Init = frWheel.getCurrentPosition();
+            odomitorPerpendicularInit = blWheel.getCurrentPosition();
+
+
+
         }
-
-
     }
 }
