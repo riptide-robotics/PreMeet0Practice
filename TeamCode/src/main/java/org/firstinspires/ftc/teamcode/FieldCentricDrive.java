@@ -58,9 +58,9 @@ public class FieldCentricDrive extends LinearOpMode {
 
 
 
-        int odomitorParallel1Init = flWheel.getCurrentPosition() ;
-        int odomitorParallel2Init = frWheel.getCurrentPosition();
-        int odomitorPerpendicularInit = blWheel.getCurrentPosition();
+        int flOdomitorInit = flWheel.getCurrentPosition() ;
+        int frOdomitorInit = frWheel.getCurrentPosition();
+        int blOdomitorInit = blWheel.getCurrentPosition();
 
         waitForStart();
 
@@ -69,7 +69,7 @@ public class FieldCentricDrive extends LinearOpMode {
         blWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (opModeIsActive()) {
-            // referencing gamepad stick to varialbe (x multiplied by 1.1 for margine of error
+            // referencing gamepad stick to varialbe (x multiplied by 1.1 for margin of error
             y = -gamepad1.left_stick_y;
             x = -gamepad1.left_stick_x * 1.1;
             rx = gamepad1.right_stick_x;
@@ -99,18 +99,18 @@ public class FieldCentricDrive extends LinearOpMode {
             blWheel.setPower(blPower);
             brWheel.setPower(brPower);
 
-            int odomitorParallel1Change = flWheel.getCurrentPosition() - odomitorParallel1Init; // Front left odomitor
-            int odomitorParallel2Change = frWheel.getCurrentPosition() - odomitorParallel2Init; // Front right odomitor
-            int odomitorPerpendicularChange = blWheel.getCurrentPosition() - odomitorPerpendicularInit; // Perpendicular odomitor
+            int flOdomitorlChange = flWheel.getCurrentPosition() - flOdomitorInit; // Front left odomitor
+            int frOdomitorChange = frWheel.getCurrentPosition() - frOdomitorInit; // Front right odomitor
+            int blOdomitorChange = blWheel.getCurrentPosition() - blOdomitorInit; // Perpendicular odomitor
 
-            double deltaY = odomitorPerpendicularChange - (odomitorParallel2Change - odomitorParallel1Change) / 2;
-            double deltaX = C*(odomitorParallel1Change + odomitorParallel2Change);
-            double deltaTheta = C*(odomitorParallel2Change - odomitorParallel1Change) / L;
+            double deltaY = blOdomitorChange - (frOdomitorChange - flOdomitorlChange) / 2;
+            double deltaX = C*(flOdomitorlChange + frOdomitorChange);
+            double deltaTheta = C*(frOdomitorChange - flOdomitorlChange) / L;
 
 
-            odomitorParallel1Init = flWheel.getCurrentPosition();
-            odomitorParallel2Init = frWheel.getCurrentPosition();
-            odomitorPerpendicularInit = blWheel.getCurrentPosition();
+            flOdomitorInit = flWheel.getCurrentPosition();
+            frOdomitorInit = frWheel.getCurrentPosition();
+            blOdomitorInit = blWheel.getCurrentPosition();
 
 
 
