@@ -160,7 +160,7 @@ public class FieldCentricDrive extends LinearOpMode {
         flWheel.setPower(outputy);
 
         frWheel.setPower(-outputy);
-        ;
+
         brWheel.setPower(outputy);
 
         blWheel.setPower(-outputy);
@@ -205,10 +205,22 @@ public class FieldCentricDrive extends LinearOpMode {
         }
     }
 
-    public void rotateXPID(int target)
+    public void deadWheelDirection()
     {
-        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
-        double errxrot = rotX - target;
+        int flOdometer = flWheel.getCurrentPosition();
+        int frOdometer = frWheel.getCurrentPosition();
+        int blOdometer = blWheel.getCurrentPosition();
+
+        if (flOdometer < 0 && frOdometer < 0 && blOdometer < 0)
+        {
+            telemetry.addData("Direction: ", "Negative and to the left");
+            telemetry.update();
+        }
+
+        if (flOdometer > 0 && frOdometer > 0 && blOdometer > 0)
+        {
+            telemetry.addData("Direction: ", "Positive and to the right");
+            telemetry.update();
+        }
     }
 }
