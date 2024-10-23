@@ -14,10 +14,13 @@ public class OdometryLocalizer implements Runnable{
 
     private final double ODO_POD_RADIUS = 4.8; //in Cm
     private final int TICKS_PER_REVOLUTION = 2000;
-    private final double LATERAL_DISTANCE = DistanceUnit.INCH.toCm(11.25); // needs to be set
-    private final double PERP_TO_CENTER = DistanceUnit.INCH.toCm(1); // needs to be set
+    private final double LATERAL_DISTANCE = DistanceUnit.INCH.toCm(10.9375); // needs to be set
+    private final double PERP_TO_CENTER = DistanceUnit.INCH.toCm(0.625); // needs to be set
     private final double C = 2 * Math.PI * ODO_POD_RADIUS / TICKS_PER_REVOLUTION;
 
+    private final double X_FACTOR = 0.51060306264;
+    private final double Y_FACTOR = 1;
+    private final double ANGLE_FACTOR = 1;
 
     private int leftParallelTicks;
     private int rightParallelTicks;
@@ -41,19 +44,18 @@ public class OdometryLocalizer implements Runnable{
         this.pollRate = pollRate;
     }
 
-    public void threeWheelLocalize()
-    {
-        leftParallelTicks = leftParallel.getCurrentPosition();
-        rightParallelTicks = rightParallel.getCurrentPosition();
-        perpendicularTicks = perpendicular.getCurrentPosition();
+    public void threeWheelLocalize() {
+        leftParallelTicks = -leftParallel.getCurrentPosition();
+        rightParallelTicks = -rightParallel.getCurrentPosition();
+        perpendicularTicks = -perpendicular.getCurrentPosition();
 
         int dodo1 = leftParallelTicks - previousLeftParallelTicks;
         int dodo2 = rightParallelTicks - previousRightParallelTicks;
         int dodo3 = perpendicularTicks - previousPerpendicularTicks;
 
-        double dx = (C * (dodo1 + dodo2)) / 2;
-        double dy = C * (dodo3 - (PERP_TO_CENTER * (dodo1 - dodo2)) / LATERAL_DISTANCE);
-        double dtheta = (C * (dodo1 - dodo2)) / LATERAL_DISTANCE;
+        double dx = (C * (dodo1 + dodo2)) / 2 * X_FACTOR;
+        double dy = C * (dodo3 - (PERP_TO_CENTER * (dodo1 - dodo2)) / LATERAL_DISTANCE) * Y_FACTOR;
+        double dtheta = (C * (dodo1 - dodo2)) / LATERAL_DISTANCE * ANGLE_FACTOR;
 
         dx = dx * Math.cos(currPos.getH()) - dx * Math.sin(currPos.getH());
         dy = dy * Math.sin(currPos.getH()) + dy * Math.cos(currPos.getH());
@@ -65,12 +67,17 @@ public class OdometryLocalizer implements Runnable{
         currPos.setX(currPos.getX(DistanceUnit.CM) + dx, DistanceUnit.CM);
         currPos.setY(currPos.getY(DistanceUnit.CM) + dy, DistanceUnit.CM);
         currPos.setH(currPos.getH() + dtheta);
-    }
 
+        double thetaNormalized = Math.atan2(Math.sin(currPos.getH()), Math.cos(currPos.getH()));
+        currPos.setH(thetaNormalized);
+    }
 
     public EditablePose2D getCurrPos(){
         return currPos;
     }
+    public int getLeftEncoder() {return leftParallelTicks;}
+    public int getRightEncoder() {return rightParallelTicks;}
+    public int getPerpendicularEncoder() {return perpendicularTicks;}
 
     @Override
     public void run(){

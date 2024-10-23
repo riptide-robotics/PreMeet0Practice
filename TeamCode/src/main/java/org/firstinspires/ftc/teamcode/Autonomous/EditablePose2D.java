@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -19,7 +21,7 @@ public class EditablePose2D {
         this.distanceUnit = distanceUnit;
     }
 
-    public double getX(DistanceUnit unit) {
+    public double getX (DistanceUnit unit) {
         return unit.fromUnit(this.distanceUnit, x);
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TestClasses;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.EditablePose2D;
 import org.firstinspires.ftc.teamcode.Autonomous.OdometryLocalizer;
 import org.firstinspires.ftc.teamcode.Robot;
 
+@TeleOp(name = "Odometry Test")
 public class PositionOpMode extends LinearOpMode {
 
     Robot robot;
@@ -38,6 +40,7 @@ public class PositionOpMode extends LinearOpMode {
          * * * * * * * * * * * * * * *
          */
         telemetry.clear();
+        robot.startOdometry();
 
         /*
          * * * * * * * * * * * * * * *
@@ -46,13 +49,21 @@ public class PositionOpMode extends LinearOpMode {
          */
 
         while(opModeIsActive()) {
-            fieldCentricDrive();
 
+            fieldCentricDrive();
             EditablePose2D currPos = robot.getCurrPos();
 
-            telemetry.addData("X Position", currPos.getX(DistanceUnit.CM));
-            telemetry.addData("Y Position", currPos.getY(DistanceUnit.CM));
+            telemetry.addData("X Position", currPos.getX(DistanceUnit.INCH));
+            telemetry.addData("Y Position", currPos.getY(DistanceUnit.INCH));
             telemetry.addData("Orientation (Degrees)", Math.toDegrees(currPos.getH()));
+
+            telemetry.addLine("\n Raw Values \n")
+                            .addData("leftEncoder", robot.getRobotPos().getLeftEncoder())
+                            .addData("rightEncoder", robot.getRobotPos().getRightEncoder())
+                            .addData("perpendicularEncoder", robot.getRobotPos().getPerpendicularEncoder());
+
+            telemetry.addLine("\n IMU measured heading")
+                            .addData("Orientation (Degrees)", robot.getRobotHeading(AngleUnit.DEGREES));
 
             telemetry.update();
         }
@@ -64,7 +75,7 @@ public class PositionOpMode extends LinearOpMode {
         double x = gamepad1.left_stick_x * 1.1; // 1.1 is to account for hardware inconsistencies.
         double rx = gamepad1.right_stick_x;
 
-        double heading = robot.getRobotHeading(); // heading of bot in radians
+        double heading = robot.getRobotHeading(AngleUnit.RADIANS); // heading of bot in radians
 
         double rotX = x * Math.cos(-heading) - y * Math.sin(-heading); // Linear transformations yay
         double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
@@ -75,6 +86,6 @@ public class PositionOpMode extends LinearOpMode {
         double brWheelPower = (rotY + rotX - rx) / denominator;
         double blWheelPower = (rotY - rotX + rx) / denominator;
 
-
+        robot.setWheelPowers(flWheelPower, frWheelPower, brWheelPower, blWheelPower);
     }
 }
