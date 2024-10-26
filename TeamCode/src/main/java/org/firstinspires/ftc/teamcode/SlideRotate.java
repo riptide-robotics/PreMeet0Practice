@@ -8,15 +8,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Slide Move")
 public class SlideRotate extends LinearOpMode {
     Servo slideJoint;
-    final double rotateUp = 0.7; //idk the value
-    final double rotateDown = 0.4; // idk the value
+    DcMotor slideMotor;
+    final double rotateUp = 0.7;
+    final double rotateDown = 0.3;
+    final double rotateMiddle = 0.5;
 
-    DcMotor rLiftSlides;
+    final int highestPos = 2350; //idk the value
+    final int lowestPos = 100;
 
     @Override
+
+
+
     public void runOpMode() throws InterruptedException{
-        slideJoint = hardwareMap.servo.get("slideJoint");
-        rLiftSlides = hardwareMap.dcMotor.get("rSlide");
+        slideJoint = hardwareMap.servo.get("pivotSlide");
+
+        slideMotor = hardwareMap.dcMotor.get("slideMotor");
+
+        slideMotor.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
         while(opModeIsActive()){
@@ -33,26 +42,29 @@ public class SlideRotate extends LinearOpMode {
 
             if (gamepad1.dpad_left)
             {
-                slideJoint.setPosition(0.5);
+                slideJoint.setPosition(0);
             }
 
-            if (gamepad1.y)
+            if (gamepad1.dpad_left)
             {
-                rLiftSlides.setPower(1);
+                moveSlides(1, highestPos);
             }
 
-            if (gamepad1.a)
+            if (gamepad1.dpad_right)
             {
-                rLiftSlides.setPower(-1);
+                moveSlides(-1, lowestPos);
             }
-
-            if (gamepad1.b)
+            if (gamepad1.left_bumper)
             {
-                rLiftSlides.setPower(0);
+                slideJoint.setPosition(rotateMiddle);
             }
-
-
-
         }
+    }
+
+    public void moveSlides(double power, int target)
+    {
+        slideMotor.setTargetPosition(target);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setPower(power);
     }
 }
