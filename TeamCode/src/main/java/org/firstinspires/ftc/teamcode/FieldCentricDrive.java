@@ -56,6 +56,7 @@ public class FieldCentricDrive extends LinearOpMode {
     private final int V = 2000; //
     private final double C = 1/V; // Circumfrence
     private final double L = 10; //unknown I PUT A RANDOM NUMBER (L is the distance between the 2 parallel odomitors
+    private final double B = 0.7; // unknown
 
 
     private IMU imu;
@@ -84,6 +85,11 @@ public class FieldCentricDrive extends LinearOpMode {
         int flOdomitorInit = flWheel.getCurrentPosition() ;
         int frOdomitorInit = frWheel.getCurrentPosition();
         int blOdomitorInit = blWheel.getCurrentPosition();
+
+        flWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        brWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
 
@@ -126,8 +132,8 @@ public class FieldCentricDrive extends LinearOpMode {
             int frOdomitorChange = frWheel.getCurrentPosition() - frOdomitorInit; // Front right odomitor
             int blOdomitorChange = blWheel.getCurrentPosition() - blOdomitorInit; // Perpendicular odomitor
 
-            double deltaY = blOdomitorChange - (frOdomitorChange - flOdomitorlChange) / 2;
-            double deltaX = C*(flOdomitorlChange + frOdomitorChange);
+            double deltaY = C * (blOdomitorChange - (B * (flOdomitorlChange - frOdomitorChange) / L));
+            double deltaX = C*(flOdomitorlChange + frOdomitorChange)/2;
             double deltaTheta = C*(frOdomitorChange - flOdomitorlChange) / L;
 
             deltaX = deltaX*Math.cos(deltaTheta) - deltaX*Math.sin(deltaTheta);
@@ -137,11 +143,9 @@ public class FieldCentricDrive extends LinearOpMode {
             flOdomitorInit = flWheel.getCurrentPosition();
             frOdomitorInit = frWheel.getCurrentPosition();
             blOdomitorInit = blWheel.getCurrentPosition();
-
-
-
         }
     }
+
     public void driveYPID(int target, double elapsedTime)
     {
         double erry = ypos - target;
