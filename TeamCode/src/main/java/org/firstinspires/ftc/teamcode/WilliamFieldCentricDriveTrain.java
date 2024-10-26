@@ -72,6 +72,11 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
         int odomiterParallel2Init = frWheelMotor.getCurrentPosition();
         int odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
 
+        flWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        brWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         waitForStart();
 
         //Make all motors go in the same direction with same values inputted for power
