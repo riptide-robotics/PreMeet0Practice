@@ -125,6 +125,15 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
             odomiterParallel1Init = flWheelMotor.getCurrentPosition();
             odomiterParallel2Init = frWheelMotor.getCurrentPosition();
             odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
+
+            telemetry.addData("X position: ", xpos);
+            telemetry.update();
+
+            telemetry.addData("Y position: ", ypos);
+            telemetry.update();
+
+            telemetry.addData("Theta: ", theta);
+            telemetry.update();
         }
     }
     /**
