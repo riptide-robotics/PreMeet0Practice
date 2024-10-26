@@ -14,8 +14,8 @@ public class OdometryLocalizer implements Runnable{
 
     private final double ODO_POD_RADIUS = 4.8; //in Cm
     private final int TICKS_PER_REVOLUTION = 2000;
-    private final double LATERAL_DISTANCE = DistanceUnit.INCH.toCm(10.9375); // needs to be set
-    private final double PERP_TO_CENTER = DistanceUnit.INCH.toCm(0.625); // needs to be set
+    private final double LATERAL_DISTANCE = DistanceUnit.INCH.toCm(10.9375); // Measured to the best of my ability
+    private final double PERP_TO_CENTER = DistanceUnit.INCH.toCm(0.625); // Measured to the best of my ability
     private final double C = 2 * Math.PI * ODO_POD_RADIUS / TICKS_PER_REVOLUTION;
 
     private final double X_FACTOR = 0.51060306264;
