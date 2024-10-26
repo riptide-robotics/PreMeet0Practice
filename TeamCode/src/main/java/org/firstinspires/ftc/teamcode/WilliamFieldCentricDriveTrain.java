@@ -45,6 +45,7 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
     private final int V = 2000;
     private final double C = 1/V; // Circumference
     private final double L = 10; //Unknown, put a random number; distance between odomitors
+    private final double B = 0/*Unknown*/;
 
     /**
      * This method is constantly running and updating
@@ -92,7 +93,7 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
             double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
-            double rotY = x * Math.sin(-heading) + y * Math.sin(-heading);
+            double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
 
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
@@ -112,12 +113,16 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
             int odomiterParallel2Change = (frWheelMotor.getCurrentPosition()) - odomiterParallel2Init; //fr odomitor
             int odomiterPerpendicularChange = (brWheelMotor.getCurrentPosition()) - odomiterPerpendicularInit; // perpen odomitor
 
-            double deltaY = odomiterPerpendicularChange - ((odomiterParallel2Change-odomiterParallel1Change)/2);
-            double deltaX = C*(odomiterParallel1Change + odomiterParallel2Change);
+            double deltaY = C * (odomiterPerpendicularChange - (B * (odomiterParallel1Change - odomiterParallel2Change)/L));
+            double deltaX = C * (odomiterParallel1Change + odomiterParallel2Change)/2;
             double deltaTheta = (C*(odomiterParallel2Change-odomiterParallel1Change))/L;
 
-            deltaX = deltaX*Math.cos(deltaTheta) - deltaX*Math.sin(deltaTheta);
-            deltaY = deltaY*Math.sin(deltaTheta) + deltaY*Math.cos(deltaTheta);
+            deltaX = deltaX*Math.cos(theta) - deltaX*Math.sin(theta);
+            deltaY = deltaY*Math.sin(theta) + deltaY*Math.cos(theta);
+
+            xpos += deltaX;
+            ypos += deltaY;
+            theta += deltaTheta;
 
             odomiterParallel1Init = flWheelMotor.getCurrentPosition();
             odomiterParallel2Init = frWheelMotor.getCurrentPosition();
@@ -216,9 +221,9 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
      */
     public void deadWheelDirection() {
         //Get current readings from odomitors
-        int flOdometer = flWheel.getCurrentPosition();
-        int frOdometer = frWheel.getCurrentPosition();
-        int blOdometer = blWheel.getCurrentPosition();
+        int flOdometer = flWheelMotor.getCurrentPosition();
+        int frOdometer = frWheelMotor.getCurrentPosition();
+        int blOdometer = blWheelMotor.getCurrentPosition();
 
         if (flOdometer < 0 && frOdometer < 0 && blOdometer < 0)
         {
