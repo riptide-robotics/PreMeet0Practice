@@ -35,8 +35,6 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
     private double ypos = 0;
     private double theta = 0;
 
-    private double yrot = 0;
-
     private double integralx = 0;
     private double integraly = 0;
     private ElapsedTime time = new ElapsedTime();
@@ -63,7 +61,7 @@ public class WilliamFieldCentricDriveTrain extends LinearOpMode {
         blWheelMotor = hardwareMap.dcMotor.get("blWheel");
 
         imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.Up, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
 
         imu.resetYaw();
 
