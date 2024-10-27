@@ -55,5 +55,9 @@ public class PIDController {
         this.kI = kI;
         this.kD = kD;
     }
+
+    public double getTime() {
+        return lastTime;
+    }
 }
 
