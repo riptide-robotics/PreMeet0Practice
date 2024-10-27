@@ -28,7 +28,6 @@ public class DriveUsingMechanumWheels extends LinearOpMode {
         brWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         blWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         waitForStart();
         // All code here is after the start button is hit.
         // Main loop; until stop button is hit
