@@ -32,12 +32,12 @@ public class IntakeSpin extends LinearOpMode {
             if (gamepad1.left_bumper)
             {
                 intakeWheels1.setPower(1);
-                intakeWheels2.setPower(1);
+                intakeWheels2.setPower(-1);
             }
 
             if(gamepad1.right_bumper)
             {
-                intakeWheels1.setPower(-1);
+                intakeWheels1.setPower(1);
                 intakeWheels2.setPower(-1);
             }
 

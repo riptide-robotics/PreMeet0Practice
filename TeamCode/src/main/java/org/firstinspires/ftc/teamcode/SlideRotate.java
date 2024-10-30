@@ -10,8 +10,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 @TeleOp(name = "Slide Move")
 public class SlideRotate extends LinearOpMode {
+    // Right slides
     Servo slideJoint1;
     DcMotor slideMotor1;
+
+    // Left slides
     Servo slideJoint2;
     DcMotor slideMotor2;
 
@@ -147,14 +150,18 @@ public class SlideRotate extends LinearOpMode {
             // Rotation stopped
             if (gamepad1.x)
             {
-                slideJoint1.setPosition(hangPos);
-                slideJoint2.setPosition(1 - hangPos);
+                //slideJoint1.setPosition(hangPos);
+                //slideJoint2.setPosition(1 - hangPos);
+
+                slideJoint1.setPosition(slideJoint1.getPosition());
+                slideJoint2.setPosition(slideJoint2.getPosition());
 
                 telemetry.addData("Rotation Servo 1: ", hangPos);
                 telemetry.addData("Rotation Servo 2: ", lServoPos);
                 telemetry.update();
             }
-            // Left slide stopped
+
+            // Reset Rotation
             if (gamepad1.left_bumper)
             {
                 slideJoint1.setPosition(rotateMiddle);
