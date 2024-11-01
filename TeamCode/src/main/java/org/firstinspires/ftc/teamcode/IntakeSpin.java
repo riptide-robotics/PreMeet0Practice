@@ -41,7 +41,6 @@ public class IntakeSpin extends LinearOpMode {
                 intakeWheels2.setPower(-1);
             }
 
-
         }
     }
 }

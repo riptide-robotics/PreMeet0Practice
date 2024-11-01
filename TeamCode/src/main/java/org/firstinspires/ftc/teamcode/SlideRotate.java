@@ -30,9 +30,11 @@ public class SlideRotate extends LinearOpMode {
 
     public static double hangPos = 0.4;
 
+
     @Override
 
     public void runOpMode() throws InterruptedException{
+
         slideJoint1 = hardwareMap.servo.get("rSlideJoint");
         slideJoint2 = hardwareMap.servo.get("lSlideJoint");
         slideMotor1 = hardwareMap.dcMotor.get("rSlide");
@@ -61,7 +63,8 @@ public class SlideRotate extends LinearOpMode {
 //            telemetry.addData("Slide Motor 2 Position: ", slideMotor2.getCurrentPosition());
 //            telemetry.update();
 
-
+            double currentPos1 = slideJoint1.getPosition();
+            double currentPos2 = slideJoint2.getPosition();
             // rotate up
             if (gamepad1.dpad_left)
             {
@@ -152,12 +155,11 @@ public class SlideRotate extends LinearOpMode {
             {
                 //slideJoint1.setPosition(hangPos);
                 //slideJoint2.setPosition(1 - hangPos);
-
-                slideJoint1.setPosition(slideJoint1.getPosition());
-                slideJoint2.setPosition(slideJoint2.getPosition());
-
-                telemetry.addData("Rotation Servo 1: ", hangPos);
-                telemetry.addData("Rotation Servo 2: ", lServoPos);
+                slideJoint1.setPosition(currentPos1 - rServoPos); // IDK how to pause servo position help
+                slideJoint2.setPosition(lServoPos - currentPos2); // IDK how to pause servo position help
+                sleep(1000);
+                telemetry.addData("Rotation Servo 1: ", currentPos1);
+                telemetry.addData("Rotation Servo 2: ", currentPos2);
                 telemetry.update();
             }
 
