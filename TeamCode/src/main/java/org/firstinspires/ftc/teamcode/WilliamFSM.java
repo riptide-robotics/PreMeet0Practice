@@ -113,15 +113,14 @@ public class WilliamFSM extends LinearOpMode {
 
     public void runOpMode() {
         // Init of all variables
+        crServoLeft = hardwareMap.crservo.get("lCrServo"); // configure this
+        crServoRight = hardwareMap.crservo.get("rCrServo");
 
-        crServoLeft = hardwareMap.crservo.get("crservoleft"); // configure this
-        crServoRight = hardwareMap.crservo.get("crservoright");
-
-        extendServoLeft = hardwareMap.servo.get("extendservoleft");
-        extendServoRight = hardwareMap.servo.get("extendservoright");
+        extendServoLeft = hardwareMap.servo.get("lExtendServo");
+        extendServoRight = hardwareMap.servo.get("rExtendServo");
         intakePitchServo = hardwareMap.servo.get("pitchServo");
-        angleIntakeServoLeft = hardwareMap.servo.get("angleServol");
-        angleIntakeServoRight = hardwareMap.servo.get("angleServor");
+        angleIntakeServoLeft = hardwareMap.servo.get("lAngleServo");
+        angleIntakeServoRight = hardwareMap.servo.get("rAngleServo");
 
         //-----------------------------------
         flWheelMotor = hardwareMap.dcMotor.get("flWheel");
@@ -135,11 +134,6 @@ public class WilliamFSM extends LinearOpMode {
         imu.resetYaw();
 
         imu.initialize(parameters);
-
-        //Init all odomitors
-        odomiterParallel1Init = flWheelMotor.getCurrentPosition();
-        odomiterParallel2Init = frWheelMotor.getCurrentPosition();
-        odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
 
         flWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
