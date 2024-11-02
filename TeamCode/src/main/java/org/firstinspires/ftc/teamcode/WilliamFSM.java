@@ -70,11 +70,6 @@ public class WilliamFSM extends LinearOpMode {
     private final double L = 10; //Unknown, put a random number; distance between odomitors
     private final double B = 0/*Unknown*/;
 
-    private int odomiterParallel1Init;
-    private int odomiterParallel2Init;
-    private int odomiterPerpendicularInit;
-
-
     //Linkage vars
 
     private final double minExtend = 0 /*Unknown*/;
@@ -390,25 +385,6 @@ public class WilliamFSM extends LinearOpMode {
         brWheelMotor.setPower(blpower);
         blWheelMotor.setPower(brpower);
 
-        int odomiterParallel1Change = (flWheelMotor.getCurrentPosition()) - odomiterParallel1Init; //fl odomitor
-        int odomiterParallel2Change = (frWheelMotor.getCurrentPosition()) - odomiterParallel2Init; //fr odomitor
-        int odomiterPerpendicularChange = (brWheelMotor.getCurrentPosition()) - odomiterPerpendicularInit; // perpen odomitor
-
-        double deltaY = C * (odomiterPerpendicularChange - (B * (odomiterParallel1Change - odomiterParallel2Change)/L));
-        double deltaX = C * (odomiterParallel1Change + odomiterParallel2Change)/2;
-        double deltaTheta = (C*(odomiterParallel2Change-odomiterParallel1Change))/L;
-
-        deltaX = deltaX*Math.cos(theta) - deltaX*Math.sin(theta);
-        deltaY = deltaY*Math.sin(theta) + deltaY*Math.cos(theta);
-
-        xpos += deltaX;
-        ypos += deltaY;
-        theta += deltaTheta;
-
-        odomiterParallel1Init = flWheelMotor.getCurrentPosition();
-        odomiterParallel2Init = frWheelMotor.getCurrentPosition();
-        odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
-
         telemetry.addData("X position: ", xpos);
         telemetry.update();
 
@@ -418,62 +394,4 @@ public class WilliamFSM extends LinearOpMode {
         telemetry.addData("Theta: ", theta);
         telemetry.update();
     }
-
-
-
-    /*public void driveYPID(int target, double elapsedTime) {
-        double errory = ypos - target;
-        double integralLimity = 1000;
-        elapsedTime = time.milliseconds();
-        integraly += errory * elapsedTime;
-
-        if (Math.abs(integraly) > integralLimity)
-            integraly = Math.signum(integraly) * integralLimity;
-
-        //Derivative part = dError/dt
-        double derivativey = (errory - previousErrory) / elapsedTime;
-        //Output = P + I + D
-        //Output = const * error + const * integral + const * de/dx
-        double outputy = errory * kpy + integraly * kiy + kdy * derivativey;
-
-        flWheelMotor.setPower(outputy);
-        frWheelMotor.setPower(-outputy);
-        brWheelMotor.setPower(outputy);
-        blWheelMotor.setPower(-outputy);
-
-        previousErrory = errory;
-    }
-
-    public void driveXPID(int target, double elapsedTime) {
-        double errorx = ypos - target;
-        double integralLimitx = 1000;
-        elapsedTime = time.milliseconds();
-        integralx += errorx * elapsedTime;
-
-        if (Math.abs(integralx) > integralLimitx)
-            integralx = Math.signum(integralx) * integralLimitx;
-
-        //Derivative part = dError/dt
-        double derivativex = (errorx - previousErrorx) / elapsedTime;
-        //Output = P + I + D
-        //Output = const * error + const * integral + const * de/dx
-        double outputx = errorx * kpy + integraly * kiy + kdy * derivativex;
-
-        flWheelMotor.setPower(outputx);
-        frWheelMotor.setPower(-outputx);
-        brWheelMotor.setPower(outputx);
-        blWheelMotor.setPower(-outputx);
-
-        previousErrorx = errorx;
-    }
-
-    public void goTo(int xpos, int ypos) {
-        ElapsedTime time = new ElapsedTime();
-        while(Math.abs(this.xpos - xpos) > 10 && Math.abs(this.ypos - ypos) > 10) {
-            driveYPID(ypos, time.milliseconds());
-            driveXPID(xpos, time.milliseconds());
-
-            time.reset();
-        }
-    }*/
 }
