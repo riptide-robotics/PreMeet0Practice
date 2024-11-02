@@ -64,8 +64,8 @@ public class SlideRotate extends LinearOpMode {
 //            telemetry.addData("Slide Motor 2 Position: ", slideMotor2.getCurrentPosition());
 //            telemetry.update();
 
-            double currentPos1 = rSlideJoint.getPosition();
-            double currentPos2 = lSlideJoint.getPosition();
+            double rSlideCurrentPos = rSlideJoint.getPosition();
+            double lSlideCurrentPos = lSlideJoint.getPosition();
             // rotate up
             if (gamepad1.dpad_left)
             {
@@ -156,11 +156,11 @@ public class SlideRotate extends LinearOpMode {
             {
                 //slideJoint1.setPosition(hangPos);
                 //slideJoint2.setPosition(1 - hangPos);
-                rSlideJoint.setPosition(currentPos1 - rServoPos); // IDK how to pause servo position help
-                lSlideJoint.setPosition(lServoPos - currentPos2); // IDK how to pause servo position help
+                rSlideJoint.setPosition(rSlideCurrentPos - rServoPos); // IDK how to pause servo position help
+                lSlideJoint.setPosition(lServoPos - lSlideCurrentPos); // IDK how to pause servo position help
                 sleep(3000);
-                telemetry.addData("Rotation Servo 1: ", currentPos1);
-                telemetry.addData("Rotation Servo 2: ", currentPos2);
+                telemetry.addData("Rotation Servo 1: ", rSlideCurrentPos);
+                telemetry.addData("Rotation Servo 2: ", lSlideCurrentPos);
                 telemetry.update();
             }
 
@@ -177,7 +177,6 @@ public class SlideRotate extends LinearOpMode {
             lServoPos = lSlideJoint.getPosition();
         }
     }
-
 
     // set power to
     public void moveSlides(double power, int target)
