@@ -294,9 +294,9 @@ public class WilliamFSM extends LinearOpMode {
                     }
 
                     if(gamepad2.y) {
-                        outtakeServo.setPosition(minOut);
-                    } else if (gamepad2.a) {
                         outtakeServo.setPosition(maxOut);
+                    } else if (gamepad2.a) {
+                        outtakeServo.setPosition(minOut);
                     }
 
                     if(gamepad2.b) {
