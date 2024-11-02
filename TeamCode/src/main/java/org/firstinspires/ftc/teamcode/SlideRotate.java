@@ -11,12 +11,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Slide Move")
 public class SlideRotate extends LinearOpMode {
     // Right slides
-    Servo slideJoint1;
-    DcMotor slideMotor1;
+    Servo rSlideJoint;
+    DcMotor rSlideMotor;
 
     // Left slides
-    Servo slideJoint2;
-    DcMotor slideMotor2;
+    Servo lSlideJoint;
+    DcMotor lSlideMotor;
 
     public static double rotateUp = 0.7;
     public static double rotateDown = 0.3;
@@ -35,25 +35,26 @@ public class SlideRotate extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException{
 
-        slideJoint1 = hardwareMap.servo.get("rSlideJoint");
-        slideJoint2 = hardwareMap.servo.get("lSlideJoint");
-        slideMotor1 = hardwareMap.dcMotor.get("rSlide");
-        slideMotor2 = hardwareMap.dcMotor.get("lSlide");
+        rSlideJoint = hardwareMap.servo.get("rSlideJoint");
+        lSlideJoint = hardwareMap.servo.get("lSlideJoint");
 
-        slideMotor2.setDirection(DcMotor.Direction.REVERSE);
+        rSlideMotor = hardwareMap.dcMotor.get("rSlide");
+        lSlideMotor = hardwareMap.dcMotor.get("lSlide");
+
+        lSlideMotor.setDirection(DcMotor.Direction.REVERSE);
 
 
-        slideJoint1.setPosition(rotateDown);
-        slideJoint2.setPosition(rotateUp);
+        rSlideJoint.setPosition(rotateDown);
+        lSlideJoint.setPosition(rotateUp);
 
         telemetry.addData("Is it uploading?", "YEs");
         telemetry.update();
 
-        slideMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        slideMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slideMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
         while(opModeIsActive()){
@@ -63,13 +64,13 @@ public class SlideRotate extends LinearOpMode {
 //            telemetry.addData("Slide Motor 2 Position: ", slideMotor2.getCurrentPosition());
 //            telemetry.update();
 
-            double currentPos1 = slideJoint1.getPosition();
-            double currentPos2 = slideJoint2.getPosition();
+            double currentPos1 = rSlideJoint.getPosition();
+            double currentPos2 = lSlideJoint.getPosition();
             // rotate up
             if (gamepad1.dpad_left)
             {
-                slideJoint1.setPosition(rotateUp);
-                slideJoint2.setPosition(rotateDown);
+                rSlideJoint.setPosition(rotateUp);
+                lSlideJoint.setPosition(rotateDown);
                 telemetry.addData("Slides: ", "rotating up");
                 telemetry.update();
             }
@@ -77,8 +78,8 @@ public class SlideRotate extends LinearOpMode {
             // rotate down
             if (gamepad1.dpad_right)
             {
-                slideJoint1.setPosition(rotateDown);
-                slideJoint2.setPosition(rotateUp);
+                rSlideJoint.setPosition(rotateDown);
+                lSlideJoint.setPosition(rotateUp);
                 telemetry.addData("Slides: ", "rotating down");
                 telemetry.update();
             }
@@ -87,8 +88,8 @@ public class SlideRotate extends LinearOpMode {
             if (gamepad1.dpad_up)
             {
                 //moveSlides(1, highestPos);
-                slideMotor1.setPower(1);
-                slideMotor2.setPower(1);
+                rSlideMotor.setPower(1);
+                lSlideMotor.setPower(1);
                 telemetry.addData("Slides: ", "moving up");
                 telemetry.update();
             }
@@ -97,8 +98,8 @@ public class SlideRotate extends LinearOpMode {
             if (gamepad1.dpad_down)
             {
                 //moveSlides(-1, lowestPos);
-                slideMotor1.setPower(-1);
-                slideMotor2.setPower(-1);
+                rSlideMotor.setPower(-1);
+                lSlideMotor.setPower(-1);
                 telemetry.addData("Slides: ", "moving down");
                 telemetry.update();
             }
@@ -106,8 +107,8 @@ public class SlideRotate extends LinearOpMode {
             // Both slides stopped
             if (gamepad1.right_bumper)
             {
-                slideMotor1.setPower(0);
-                slideMotor2.setPower(0);
+                rSlideMotor.setPower(0);
+                lSlideMotor.setPower(0);
                 telemetry.addData("Slides: ", "stopped");
                 telemetry.update();
             }
@@ -155,9 +156,9 @@ public class SlideRotate extends LinearOpMode {
             {
                 //slideJoint1.setPosition(hangPos);
                 //slideJoint2.setPosition(1 - hangPos);
-                slideJoint1.setPosition(currentPos1 - rServoPos); // IDK how to pause servo position help
-                slideJoint2.setPosition(lServoPos - currentPos2); // IDK how to pause servo position help
-                sleep(1000);
+                rSlideJoint.setPosition(currentPos1 - rServoPos); // IDK how to pause servo position help
+                lSlideJoint.setPosition(lServoPos - currentPos2); // IDK how to pause servo position help
+                sleep(3000);
                 telemetry.addData("Rotation Servo 1: ", currentPos1);
                 telemetry.addData("Rotation Servo 2: ", currentPos2);
                 telemetry.update();
@@ -166,14 +167,14 @@ public class SlideRotate extends LinearOpMode {
             // Reset Rotation
             if (gamepad1.left_bumper)
             {
-                slideJoint1.setPosition(rotateMiddle);
-                slideJoint2.setPosition(rotateMiddle);
+                rSlideJoint.setPosition(rotateMiddle);
+                lSlideJoint.setPosition(rotateMiddle);
                 telemetry.addData("Rotation: ", "Reset");
                 telemetry.update();
             }
 
-            rServoPos = slideJoint1.getPosition();
-            lServoPos = slideJoint2.getPosition();
+            rServoPos = rSlideJoint.getPosition();
+            lServoPos = lSlideJoint.getPosition();
         }
     }
 
@@ -183,10 +184,10 @@ public class SlideRotate extends LinearOpMode {
     {
         //slideMotor1.setTargetPosition(target);
         //slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideMotor1.setPower(power);
+        rSlideMotor.setPower(power);
 
         //slideMotor2.setTargetPosition(target);
         //slideMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideMotor2.setPower(power);
+        lSlideMotor.setPower(power);
     }
 }
