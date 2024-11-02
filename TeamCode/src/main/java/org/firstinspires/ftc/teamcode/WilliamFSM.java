@@ -182,6 +182,8 @@ public class WilliamFSM extends LinearOpMode {
         flWheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         blWheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        currentState = states.CLEANUP;
+
         while(opModeIsActive()) {
             switch(currentState) {
                 case CLEANUP:
@@ -279,12 +281,6 @@ public class WilliamFSM extends LinearOpMode {
                         telemetry.update();
                     }
 
-                    if(gamepad2.y) {
-                        outtakeServo.setPosition(minOut);
-                    } else if (gamepad2.a) {
-                        outtakeServo.setPosition(maxOut);
-                    }
-
                     rServoPos = rSlideJoint.getPosition();
                     lServoPos = lSlideJoint.getPosition();
 
@@ -297,15 +293,21 @@ public class WilliamFSM extends LinearOpMode {
                         currentState = states.DRIVE;
                     }
 
-                    if(gamepad2.a) {
+                    if(gamepad2.y) {
+                        outtakeServo.setPosition(minOut);
+                    } else if (gamepad2.a) {
+                        outtakeServo.setPosition(maxOut);
+                    }
+
+                    if(gamepad2.b) {
                         crServoLeft.setPower(0);
                         crServoRight.setPower(0);
                     } else if(gamepad2.left_bumper) {
                         crServoLeft.setPower(1);
                         crServoRight.setPower(-1);
                     } else if(gamepad2.right_bumper) {
-                        crServoLeft.setPower(1);
-                        crServoRight.setPower(-1);
+                        crServoLeft.setPower(-1);
+                        crServoRight.setPower(1);
                     }
 
                     if(gamepad2.dpad_down) {
@@ -328,11 +330,11 @@ public class WilliamFSM extends LinearOpMode {
                         angleIntakeServoRight.setPosition(maxAngle);
                     }
 
-                    if(gamepad2.left_trigger >= 0.1) {
+                    if(gamepad2.left_trigger != 0) {
                         intakePitchServo.setPosition(minPitch);
                     }
 
-                    if(gamepad2.right_trigger >= 0.1) {
+                    if(gamepad2.right_trigger != 0) {
                         intakePitchServo.setPosition(maxPitch);
                     }
 
