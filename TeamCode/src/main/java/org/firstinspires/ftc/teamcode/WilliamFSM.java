@@ -32,8 +32,8 @@ public class WilliamFSM extends LinearOpMode {
     Servo extendServoLeft;
     Servo extendServoRight;
     Servo intakePitchServo;
-    Servo angleIntakeServoLeft;
-    Servo angleIntakeServoRight;
+    Servo lIntakeAngleServo;
+    Servo rIntakeAngleServo;
     //Hang
     Servo rSlideJoint;
     Servo lSlideJoint;
@@ -119,8 +119,8 @@ public class WilliamFSM extends LinearOpMode {
         extendServoLeft = hardwareMap.servo.get("lExtendServo");
         extendServoRight = hardwareMap.servo.get("rExtendServo");
         intakePitchServo = hardwareMap.servo.get("pitchServo");
-        angleIntakeServoLeft = hardwareMap.servo.get("lAngleServo");
-        angleIntakeServoRight = hardwareMap.servo.get("rAngleServo");
+        lIntakeAngleServo = hardwareMap.servo.get("lIntakeAngle");
+        rIntakeAngleServo = hardwareMap.servo.get("rIntakeAngle");
 
         //-----------------------------------
         flWheelMotor = hardwareMap.dcMotor.get("flWheel");
@@ -184,8 +184,8 @@ public class WilliamFSM extends LinearOpMode {
 
                     extendServoLeft.setPosition(minExtend);
                     extendServoRight.setPosition(minExtend);
-                    angleIntakeServoLeft.setPosition(minAngle);
-                    angleIntakeServoRight.setPosition(minAngle);
+                    lIntakeAngleServo.setPosition(minAngle);
+                    rIntakeAngleServo.setPosition(minAngle);
                     intakePitchServo.setPosition(minPitch);
 
                     //Hang vars
@@ -308,13 +308,13 @@ public class WilliamFSM extends LinearOpMode {
                     }
 
                     if(gamepad2.dpad_left) {
-                        angleIntakeServoLeft.setPosition(minAngle);
-                        angleIntakeServoRight.setPosition(minAngle);
+                        lIntakeAngleServo.setPosition(minAngle);
+                        rIntakeAngleServo.setPosition(minAngle);
                     }
 
                     if(gamepad2.dpad_right) {
-                        angleIntakeServoLeft.setPosition(maxAngle);
-                        angleIntakeServoRight.setPosition(maxAngle);
+                        lIntakeAngleServo.setPosition(maxAngle);
+                        rIntakeAngleServo.setPosition(maxAngle);
                     }
 
                     if(gamepad2.left_trigger != 0) {
