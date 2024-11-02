@@ -112,14 +112,15 @@ public class WilliamFSM extends LinearOpMode {
         CLEANUP,
         DRIVE,
         HANG,
-        LINKAGE
+        LINKAGE,
+        OUTTAKE
     }
 
     public void runOpMode() {
         // Init of all variables
 
-        crServoLeft = hardwareMap.crservo.get("crservo1"); // configure this
-        crServoRight = hardwareMap.crservo.get("crservo2");
+        crServoLeft = hardwareMap.crservo.get("crservoleft"); // configure this
+        crServoRight = hardwareMap.crservo.get("crservoright");
 
         extendServoLeft = hardwareMap.servo.get("extendservoleft");
         extendServoRight = hardwareMap.servo.get("extendservoright");
@@ -201,6 +202,9 @@ public class WilliamFSM extends LinearOpMode {
                     //Hang vars
                     rSlideJoint.setPosition(rotateDown);
                     lSlideJoint.setPosition(rotateUp);
+
+                    rSlideMotor.setTargetPosition(lowestPos);
+                    lSlideMotor.setTargetPosition(lowestPos);
 
                     break;
                 case DRIVE:
@@ -293,12 +297,6 @@ public class WilliamFSM extends LinearOpMode {
                         currentState = states.DRIVE;
                     }
 
-                    if(gamepad2.y) {
-                        outtakeServo.setPosition(maxOut);
-                    } else if (gamepad2.a) {
-                        outtakeServo.setPosition(minOut);
-                    }
-
                     if(gamepad2.b) {
                         crServoLeft.setPower(0);
                         crServoRight.setPower(0);
@@ -340,6 +338,14 @@ public class WilliamFSM extends LinearOpMode {
 
                     fieldDrive();
 
+                    break;
+                case OUTTAKE:
+                    if(gamepad2.y) {
+                        outtakeServo.setPosition(maxOut);
+                    } else if (gamepad2.a) {
+                        outtakeServo.setPosition(minOut);
+                    }
+                    fieldDrive();
                     break;
             }
         }
