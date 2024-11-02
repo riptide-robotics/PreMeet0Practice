@@ -68,6 +68,11 @@ public class WilliamFSM extends LinearOpMode {
     private final double L = 10; //Unknown, put a random number; distance between odomitors
     private final double B = 0/*Unknown*/;
 
+    private int odomiterParallel1Init;
+    private int odomiterParallel2Init;
+    private int odomiterPerpendicularInit;
+
+
     //Linkage vars
 
     private final double minExtend = 0 /*Unknown*/;
@@ -76,6 +81,7 @@ public class WilliamFSM extends LinearOpMode {
     private final double maxPitch = 0 /*Unknown*/;
     private final double minAngle = 0 /*Unknown*/;
     private final double maxAngle = 0 /*Unknown*/;
+
 
     //Hang vars
 
@@ -131,9 +137,9 @@ public class WilliamFSM extends LinearOpMode {
         imu.initialize(parameters);
 
         //Init all odomitors
-        int odomiterParallel1Init = flWheelMotor.getCurrentPosition();
-        int odomiterParallel2Init = frWheelMotor.getCurrentPosition();
-        int odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
+        odomiterParallel1Init = flWheelMotor.getCurrentPosition();
+        odomiterParallel2Init = frWheelMotor.getCurrentPosition();
+        odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
 
         flWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -169,12 +175,6 @@ public class WilliamFSM extends LinearOpMode {
         blWheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while(opModeIsActive()) {
-            if(currentState == states.CLEANUP && gamepad1.b) {
-                currentState = states.DRIVE;
-            } else if(currentState == states.DRIVE && gamepad1.b) {
-                currentState = states.DRIVE;
-            }
-
             switch(currentState) {
                 case CLEANUP:
                     //Linkage vars
@@ -194,71 +194,10 @@ public class WilliamFSM extends LinearOpMode {
 
                     break;
                 case DRIVE:
-
-                    if(gamepad1.y) {
-                        currentState = states.HANG;
-                    } else if (gamepad1.x) {
-                        currentState = states.CLEANUP;
-                    } else if (gamepad1.b) {
-                        currentState = states.LINKAGE;
-                    }
-
-                    //controller values inputted
-                    y = -gamepad1.left_stick_y;
-                    //for margin of error in movement
-                    x = gamepad1.left_stick_x * 1.1;
-                    rx = gamepad1.right_stick_x;
-
-                    double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-                    double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
-                    double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
-
-                    double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-
-                    //power set for each of our motos
-                    double flpower = (rotY - rotX + rx)/denominator;
-                    double frpower = (rotY + rotX - rx)/denominator;
-                    double blpower = (rotY + rotX + rx)/denominator;
-                    double brpower = (rotY - rotX - rx)/denominator;
-
-                    //setting the power of each of our motos
-                    flWheelMotor.setPower(flpower);
-                    frWheelMotor.setPower(frpower);
-                    brWheelMotor.setPower(blpower);
-                    blWheelMotor.setPower(brpower);
-
-                    int odomiterParallel1Change = (flWheelMotor.getCurrentPosition()) - odomiterParallel1Init; //fl odomitor
-                    int odomiterParallel2Change = (frWheelMotor.getCurrentPosition()) - odomiterParallel2Init; //fr odomitor
-                    int odomiterPerpendicularChange = (brWheelMotor.getCurrentPosition()) - odomiterPerpendicularInit; // perpen odomitor
-
-                    double deltaY = C * (odomiterPerpendicularChange - (B * (odomiterParallel1Change - odomiterParallel2Change)/L));
-                    double deltaX = C * (odomiterParallel1Change + odomiterParallel2Change)/2;
-                    double deltaTheta = (C*(odomiterParallel2Change-odomiterParallel1Change))/L;
-
-                    deltaX = deltaX*Math.cos(theta) - deltaX*Math.sin(theta);
-                    deltaY = deltaY*Math.sin(theta) + deltaY*Math.cos(theta);
-
-                    xpos += deltaX;
-                    ypos += deltaY;
-                    theta += deltaTheta;
-
-                    odomiterParallel1Init = flWheelMotor.getCurrentPosition();
-                    odomiterParallel2Init = frWheelMotor.getCurrentPosition();
-                    odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
-
-                    telemetry.addData("X position: ", xpos);
-                    telemetry.update();
-
-                    telemetry.addData("Y position: ", ypos);
-                    telemetry.update();
-
-                    telemetry.addData("Theta: ", theta);
-                    telemetry.update();
+                    fieldDrive();
 
                     break;
                 case HANG:
-
                     if (gamepad1.x) {
                         currentState = states.DRIVE;
                     }
@@ -335,6 +274,9 @@ public class WilliamFSM extends LinearOpMode {
 
                     rServoPos = rSlideJoint.getPosition();
                     lServoPos = lSlideJoint.getPosition();
+
+                    fieldDrive();
+
                     break;
                 case LINKAGE:
 
@@ -363,7 +305,7 @@ public class WilliamFSM extends LinearOpMode {
                         extendServoRight.setPosition(maxExtend);
                     }
 
-                    if(gamepad1.dpad_left) {
+                    if(gamepad2.dpad_left) {
                         angleIntakeServoLeft.setPosition(minAngle);
                         angleIntakeServoRight.setPosition(minAngle);
                     }
@@ -380,6 +322,9 @@ public class WilliamFSM extends LinearOpMode {
                     if(gamepad2.right_trigger >= 0.1) {
                         intakePitchServo.setPosition(maxPitch);
                     }
+
+                    fieldDrive();
+
                     break;
             }
         }
@@ -439,5 +384,73 @@ public class WilliamFSM extends LinearOpMode {
 
             time.reset();
         }
+    }
+
+    public void fieldDrive() {
+        rSlideJoint.setPosition(rotateMiddle);
+        lSlideJoint.setPosition(rotateMiddle);
+
+        if(currentState == states.DRIVE) {
+            if (gamepad1.y) {
+                currentState = states.HANG;
+            } else if (gamepad1.x) {
+                currentState = states.CLEANUP;
+            } else if (gamepad1.b) {
+                currentState = states.LINKAGE;
+            }
+        }
+
+        //controller values inputted
+        y = -gamepad1.left_stick_y;
+        //for margin of error in movement
+        x = gamepad1.left_stick_x * 1.1;
+        rx = gamepad1.right_stick_x;
+
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
+        double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
+
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+
+        //power set for each of our motos
+        double flpower = (rotY - rotX + rx)/denominator;
+        double frpower = (rotY + rotX - rx)/denominator;
+        double blpower = (rotY + rotX + rx)/denominator;
+        double brpower = (rotY - rotX - rx)/denominator;
+
+        //setting the power of each of our motos
+        flWheelMotor.setPower(flpower);
+        frWheelMotor.setPower(frpower);
+        brWheelMotor.setPower(blpower);
+        blWheelMotor.setPower(brpower);
+
+        int odomiterParallel1Change = (flWheelMotor.getCurrentPosition()) - odomiterParallel1Init; //fl odomitor
+        int odomiterParallel2Change = (frWheelMotor.getCurrentPosition()) - odomiterParallel2Init; //fr odomitor
+        int odomiterPerpendicularChange = (brWheelMotor.getCurrentPosition()) - odomiterPerpendicularInit; // perpen odomitor
+
+        double deltaY = C * (odomiterPerpendicularChange - (B * (odomiterParallel1Change - odomiterParallel2Change)/L));
+        double deltaX = C * (odomiterParallel1Change + odomiterParallel2Change)/2;
+        double deltaTheta = (C*(odomiterParallel2Change-odomiterParallel1Change))/L;
+
+        deltaX = deltaX*Math.cos(theta) - deltaX*Math.sin(theta);
+        deltaY = deltaY*Math.sin(theta) + deltaY*Math.cos(theta);
+
+        xpos += deltaX;
+        ypos += deltaY;
+        theta += deltaTheta;
+
+        odomiterParallel1Init = flWheelMotor.getCurrentPosition();
+        odomiterParallel2Init = frWheelMotor.getCurrentPosition();
+        odomiterPerpendicularInit = brWheelMotor.getCurrentPosition();
+
+        telemetry.addData("X position: ", xpos);
+        telemetry.update();
+
+        telemetry.addData("Y position: ", ypos);
+        telemetry.update();
+
+        telemetry.addData("Theta: ", theta);
+        telemetry.update();
     }
 }
