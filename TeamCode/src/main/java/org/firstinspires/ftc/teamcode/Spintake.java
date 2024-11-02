@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @TeleOp(name = "Intake Spin")
-public class IntakeSpin extends LinearOpMode {
+public class Spintake extends LinearOpMode {
 
 
     CRServo intakeWheels1;
