@@ -116,8 +116,8 @@ public class WilliamFSM extends LinearOpMode {
         crServoLeft = hardwareMap.crservo.get("lCrServo"); // configure this
         crServoRight = hardwareMap.crservo.get("rCrServo");
 
-        extendServoLeft = hardwareMap.servo.get("lExtendServo");
-        extendServoRight = hardwareMap.servo.get("rExtendServo");
+        extendServoLeft = hardwareMap.servo.get("lExtend");
+        extendServoRight = hardwareMap.servo.get("rExtend");
         intakePitchServo = hardwareMap.servo.get("pitchServo");
         lIntakeAngleServo = hardwareMap.servo.get("lIntakeAngle");
         rIntakeAngleServo = hardwareMap.servo.get("rIntakeAngle");
