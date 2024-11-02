@@ -37,6 +37,8 @@ public class WilliamFSM extends LinearOpMode {
     //Hang
     Servo rSlideJoint;
     Servo lSlideJoint;
+    //Outtake
+    Servo outtakeServo;
 
     //----------All variables----------
     //Field Centric Drive vars
@@ -82,6 +84,8 @@ public class WilliamFSM extends LinearOpMode {
     private final double minAngle = 0 /*Unknown*/;
     private final double maxAngle = 0 /*Unknown*/;
 
+    private final double minOut = 0/*Unknown*/;
+    private final double maxOut = 0/*Unknown*/;
 
     //Hang vars
 
@@ -169,6 +173,10 @@ public class WilliamFSM extends LinearOpMode {
         rSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        //--------------------------------------------------------------------
+
+        outtakeServo = hardwareMap.servo.get("outtakeServo");
+
         waitForStart();
 
         flWheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -195,7 +203,6 @@ public class WilliamFSM extends LinearOpMode {
                     break;
                 case DRIVE:
                     fieldDrive();
-
                     break;
                 case HANG:
                     if (gamepad1.x) {
@@ -272,6 +279,12 @@ public class WilliamFSM extends LinearOpMode {
                         telemetry.update();
                     }
 
+                    if(gamepad2.y) {
+                        outtakeServo.setPosition(minOut);
+                    } else if (gamepad2.a) {
+                        outtakeServo.setPosition(maxOut);
+                    }
+
                     rServoPos = rSlideJoint.getPosition();
                     lServoPos = lSlideJoint.getPosition();
 
@@ -327,62 +340,6 @@ public class WilliamFSM extends LinearOpMode {
 
                     break;
             }
-        }
-    }
-
-    public void driveYPID(int target, double elapsedTime) {
-        double errory = ypos - target;
-        double integralLimity = 1000;
-        elapsedTime = time.milliseconds();
-        integraly += errory * elapsedTime;
-
-        if (Math.abs(integraly) > integralLimity)
-            integraly = Math.signum(integraly) * integralLimity;
-
-        //Derivative part = dError/dt
-        double derivativey = (errory - previousErrory) / elapsedTime;
-        //Output = P + I + D
-        //Output = const * error + const * integral + const * de/dx
-        double outputy = errory * kpy + integraly * kiy + kdy * derivativey;
-
-        flWheelMotor.setPower(outputy);
-        frWheelMotor.setPower(-outputy);
-        brWheelMotor.setPower(outputy);
-        blWheelMotor.setPower(-outputy);
-
-        previousErrory = errory;
-    }
-
-    public void driveXPID(int target, double elapsedTime) {
-        double errorx = ypos - target;
-        double integralLimitx = 1000;
-        elapsedTime = time.milliseconds();
-        integralx += errorx * elapsedTime;
-
-        if (Math.abs(integralx) > integralLimitx)
-            integralx = Math.signum(integralx) * integralLimitx;
-
-        //Derivative part = dError/dt
-        double derivativex = (errorx - previousErrorx) / elapsedTime;
-        //Output = P + I + D
-        //Output = const * error + const * integral + const * de/dx
-        double outputx = errorx * kpy + integraly * kiy + kdy * derivativex;
-
-        flWheelMotor.setPower(outputx);
-        frWheelMotor.setPower(-outputx);
-        brWheelMotor.setPower(outputx);
-        blWheelMotor.setPower(-outputx);
-
-        previousErrorx = errorx;
-    }
-
-    public void goTo(int xpos, int ypos) {
-        ElapsedTime time = new ElapsedTime();
-        while(Math.abs(this.xpos - xpos) > 10 && Math.abs(this.ypos - ypos) > 10) {
-            driveYPID(ypos, time.milliseconds());
-            driveXPID(xpos, time.milliseconds());
-
-            time.reset();
         }
     }
 
@@ -453,4 +410,62 @@ public class WilliamFSM extends LinearOpMode {
         telemetry.addData("Theta: ", theta);
         telemetry.update();
     }
+
+
+
+    /*public void driveYPID(int target, double elapsedTime) {
+        double errory = ypos - target;
+        double integralLimity = 1000;
+        elapsedTime = time.milliseconds();
+        integraly += errory * elapsedTime;
+
+        if (Math.abs(integraly) > integralLimity)
+            integraly = Math.signum(integraly) * integralLimity;
+
+        //Derivative part = dError/dt
+        double derivativey = (errory - previousErrory) / elapsedTime;
+        //Output = P + I + D
+        //Output = const * error + const * integral + const * de/dx
+        double outputy = errory * kpy + integraly * kiy + kdy * derivativey;
+
+        flWheelMotor.setPower(outputy);
+        frWheelMotor.setPower(-outputy);
+        brWheelMotor.setPower(outputy);
+        blWheelMotor.setPower(-outputy);
+
+        previousErrory = errory;
+    }
+
+    public void driveXPID(int target, double elapsedTime) {
+        double errorx = ypos - target;
+        double integralLimitx = 1000;
+        elapsedTime = time.milliseconds();
+        integralx += errorx * elapsedTime;
+
+        if (Math.abs(integralx) > integralLimitx)
+            integralx = Math.signum(integralx) * integralLimitx;
+
+        //Derivative part = dError/dt
+        double derivativex = (errorx - previousErrorx) / elapsedTime;
+        //Output = P + I + D
+        //Output = const * error + const * integral + const * de/dx
+        double outputx = errorx * kpy + integraly * kiy + kdy * derivativex;
+
+        flWheelMotor.setPower(outputx);
+        frWheelMotor.setPower(-outputx);
+        brWheelMotor.setPower(outputx);
+        blWheelMotor.setPower(-outputx);
+
+        previousErrorx = errorx;
+    }
+
+    public void goTo(int xpos, int ypos) {
+        ElapsedTime time = new ElapsedTime();
+        while(Math.abs(this.xpos - xpos) > 10 && Math.abs(this.ypos - ypos) > 10) {
+            driveYPID(ypos, time.milliseconds());
+            driveXPID(xpos, time.milliseconds());
+
+            time.reset();
+        }
+    }*/
 }
