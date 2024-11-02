@@ -159,8 +159,8 @@ public class SlideRotate extends LinearOpMode {
                 rSlideJoint.setPosition(rSlideCurrentPos - rServoPos); // IDK how to pause servo position help
                 lSlideJoint.setPosition(lServoPos - lSlideCurrentPos); // IDK how to pause servo position help
                 sleep(3000);
-                telemetry.addData("Rotation Servo 1: ", rSlideCurrentPos);
-                telemetry.addData("Rotation Servo 2: ", lSlideCurrentPos);
+                telemetry.addData("Rotation Servo Right: ", rSlideCurrentPos - rServoPos);
+                telemetry.addData("Rotation Servo Left: ", lServoPos - lSlideCurrentPos);
                 telemetry.update();
             }
 
