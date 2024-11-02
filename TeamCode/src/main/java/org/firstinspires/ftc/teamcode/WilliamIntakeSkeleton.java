@@ -39,15 +39,15 @@ public class WilliamIntakeSkeleton extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            if(gamepad1.left_bumper) {
-                crServoLeft.setPower(1);
-                crServoRight.setPower(1);
-            } else if(gamepad1.right_bumper) {
-                crServoLeft.setPower(-1);
-                crServoRight.setPower(-1);
-            } else {
+            if(gamepad1.a) {
                 crServoLeft.setPower(0);
                 crServoRight.setPower(0);
+            } else if(gamepad1.left_bumper) {
+                crServoLeft.setPower(1);
+                crServoRight.setPower(-1);
+            } else if(gamepad1.right_bumper) {
+                crServoLeft.setPower(1);
+                crServoRight.setPower(-1);
             }
 
             if(gamepad1.dpad_down) {
