@@ -150,102 +150,106 @@ public class Meet1Controller extends LinearOpMode {
 
 
             switch (currentState) {
-                case INTAKE:
+//                case INTAKE:
+//
+//                    fieldCentricDrive();
+//
+//                    // INTAKE SPIN
+//                    //----------------------------------------------------------------------------------------------------------------
+//                    if (gamepad2.b) {
+//                        intakeWheelsL.setPower(0);
+//                        intakeWheelsR.setPower(0);
+//                    }
+//
+//                    if (gamepad2.left_bumper) {
+//                        intakeWheelsL.setPower(1);
+//                        intakeWheelsR.setPower(1);
+//                    }
+//
+//                    if (gamepad2.right_bumper) {
+//                        intakeWheelsL.setPower(-1);
+//                        intakeWheelsR.setPower(1);
+//                    }
+//
+//                    //----------------------------------------------------------------------------------------------------------------
+//
+//                    // INTAKE EXTEND/RETRACT
+//
+//                    //----------------------------------------------------------------------------------------------------------------
+//
+//                    if (gamepad2.right_trigger > 0) {
+//                        lSlideServo.setPosition(extendSlidesOut);
+//                        rSlideServo.setPosition(extendSlidesOut);
+//                        telemetry.addData("Intake Slides: ", "going in");
+//                        telemetry.update();
+//                    }
+//
+//                    if (gamepad2.left_trigger > 0) {
+//                        lSlideServo.setPosition(extendSlidesIn);
+//                        rSlideServo.setPosition(extendSlidesIn);
+//                        telemetry.addData("Intake Slides: ", "going out");
+//                        telemetry.update();
+//                    }
+//
+//                    //INTAKE EXTEND/RETRACT
+//                    if (gamepad2.x) {
+//                        telemetry.addData("STATE: ", "RESET");
+//                        telemetry.update();
+//                        currentState = states.RESET;
+//                    }
+//
+//                    //-----------------------------------------------------------------------------------------------------------------
+//
+//                    // INTAKE PIVOT
+//
+//                    //----------------------------------------------------------------------------------------------------------------
+//
+//                    if (gamepad2.dpad_up) {
+//                        intakePivotServo.setPosition(pivotIntakeUp);
+//                        telemetry.addData("Intake: ", "rotating up");
+//                        telemetry.update();
+//                    }
+//
+//                    if (gamepad2.dpad_down) {
+//                        intakePivotServo.setPosition(pivotIntakeDown);
+//                        telemetry.addData("Intake: ", "rotating down");
+//                        telemetry.update();
+//                    }
+//
+//                    if (gamepad2.y) {
+//                        rIntakeArmPivot.setPosition(pivotIntakeArmUp);
+//                        telemetry.addData("Intake Arm: ", "rotating up");
+//                        telemetry.update();
+//                    }
+//
+//                    if (gamepad2.a) {
+//                        rIntakeArmPivot.setPosition(pivotIntakeArmDown);
+//                        telemetry.addData("Intake Arm: ", "rotating down");
+//                        telemetry.update();
+//                    }
 
-                    fieldCentricDrive();
-
-                    // INTAKE SPIN
-                    //----------------------------------------------------------------------------------------------------------------
-                    if (gamepad2.b) {
-                        intakeWheelsL.setPower(0);
-                        intakeWheelsR.setPower(0);
-                    }
-
-                    if (gamepad2.left_bumper) {
-                        intakeWheelsL.setPower(1);
-                        intakeWheelsR.setPower(1);
-                    }
-
-                    if (gamepad2.right_bumper) {
-                        intakeWheelsL.setPower(-1);
-                        intakeWheelsR.setPower(1);
-                    }
-
-                    //----------------------------------------------------------------------------------------------------------------
-
-                    // INTAKE EXTEND/RETRACT
-
-                    //----------------------------------------------------------------------------------------------------------------
-
-                    if (gamepad2.right_trigger > 0) {
-                        lSlideServo.setPosition(extendSlidesOut);
-                        rSlideServo.setPosition(extendSlidesOut);
-                        telemetry.addData("Intake Slides: ", "going in");
-                        telemetry.update();
-                    }
-
-                    if (gamepad2.left_trigger > 0) {
-                        lSlideServo.setPosition(extendSlidesIn);
-                        rSlideServo.setPosition(extendSlidesIn);
-                        telemetry.addData("Intake Slides: ", "going out");
-                        telemetry.update();
-                    }
-
-                    //INTAKE EXTEND/RETRACT
-                    if (gamepad2.x) {
-                        currentState = states.RESET;
-                    }
-
-                    //-----------------------------------------------------------------------------------------------------------------
-
-                    // INTAKE PIVOT
-
-                    //----------------------------------------------------------------------------------------------------------------
-
-                    if (gamepad2.dpad_up) {
-                        intakePivotServo.setPosition(pivotIntakeUp);
-                        telemetry.addData("Intake: ", "rotating up");
-                        telemetry.update();
-                    }
-
-                    if (gamepad2.dpad_down) {
-                        intakePivotServo.setPosition(pivotIntakeDown);
-                        telemetry.addData("Intake: ", "rotating down");
-                        telemetry.update();
-                    }
-
-                    if (gamepad2.y) {
-                        rIntakeArmPivot.setPosition(pivotIntakeArmUp);
-                        telemetry.addData("Intake Arm: ", "rotating up");
-                        telemetry.update();
-                    }
-
-                    if (gamepad2.a) {
-                        rIntakeArmPivot.setPosition(pivotIntakeArmDown);
-                        telemetry.addData("Intake Arm: ", "rotating down");
-                        telemetry.update();
-                    }
-
-                case RESET:
-
-                    fieldCentricDrive();
-
-                    if (gamepad2.left_bumper)
-                    {
-                        lSlideServo.setPosition(0);
-                        rSlideJoint.setPosition(0);
-
-                        intakePivotServo.setPosition(0);
-                        rIntakeArmPivot.setPosition(0);
-
-                        rSlideJoint.setPosition(rotateMiddle);
-                        lSlideJoint.setPosition(rotateMiddle);
-                    }
-
-                    if (gamepad2.x)
-                    {
-                        currentState = states.HANG;
-                    }
+//                case RESET:
+//
+//                    fieldCentricDrive();
+//
+//                    if (gamepad2.left_bumper)
+//                    {
+//                        lSlideServo.setPosition(0);
+//                        rSlideJoint.setPosition(0);
+//
+//                        intakePivotServo.setPosition(0);
+//                        rIntakeArmPivot.setPosition(0);
+//
+//                        rSlideJoint.setPosition(rotateMiddle);
+//                        lSlideJoint.setPosition(rotateMiddle);
+//                    }
+//
+//                    if (gamepad2.x)
+//                    {
+//                        telemetry.addData("STATE: ", "HANG");
+//                        telemetry.update();
+//                        currentState = states.HANG;
+//                    }
 
                 case HANG:
 

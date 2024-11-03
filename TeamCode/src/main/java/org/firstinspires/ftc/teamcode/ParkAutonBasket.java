@@ -45,11 +45,16 @@ public class ParkAutonBasket extends LinearOpMode {
 
             double distance = flWheel.getVelocity()*elapsedTime+(0.5*acceleration*(elapsedTime*elapsedTime));
 
-            forward(10); // idk value but go forward about 2m
-            rotateRight(10); // idk value but rotate 90deg
-            forward(10); // idk value but go forward about 8m (towards park zone)
-            rotateLeft(10); // idk value but rotate to face the park zone
-            forward(10); // idk value but go into park zone and stop(about 2m)
+
+            flWheel.setPower(1);
+            frWheel.setPower(-1);
+            blWheel.setPower(-1);
+            brWheel.setPower(1);
+            sleep(5000);
+            flWheel.setPower(0);
+            frWheel.setPower(0);
+            blWheel.setPower(0);
+            brWheel.setPower(0);
         }
     }
 
